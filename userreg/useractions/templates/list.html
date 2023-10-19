@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #DDD;
+            width: 33%;
+        }
+        
+        tr:hover {background-color: #D6EEEE;}
+
+        .parent-row th, td {
+            width: 20%;
+        }
+        /* .child-row {
+            display: none;
+        } */
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>No.of Logs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inst in data %}
+            <tr class="parent-row">
+                <td>{{inst.id}}</td>
+                <td>{{inst.first_name}} {{inst.last_name}}</td>
+                <td>{{inst.Email}}</td>
+                <td>{{inst.num_items}}</td>
+            </tr>
+            <tr class="{{inst.id}}-child-row" style="display: none; background-color: aliceblue;">
+                <td colspan="3">
+                    <table>
+                        <tr>
+                            <th style="width: 50%;">URL</th>
+                            <th style="width: 50%;">clicks</th>
+                        </tr>
+                        {% for key,value in inst.shortened_urls.items %}
+                        <tr>
+                            <td style="width: 50%;">{{key}}</td>
+                            <td style="width: 50%;">{{value}}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const parentRows = document.querySelectorAll('.parent-row');
+        parentRows.forEach((row) => {
+            console.log(row);
+            row.addEventListener('click', () => {
+                
+                const lastChild = row.lastElementChild;
+                if (lastChild) {
+                    const numItems = parseInt(lastChild.innerHTML);
+                    console.log(lastChild, numItems);
+                    if (numItems > 0) {
+                        console.log('in');
+                        const childRows = document.getElementsByClassName(row.firstElementChild.innerHTML + '-child-row');
+                        for (let i = 0; i < childRows.length; i++) {
+                            const childRow = childRows[i];
+                            if (childRow.style.display === '' || childRow.style.display === 'table-row') {
+                                childRow.style.display = 'none';
+                            } else {
+                                childRow.style.display = 'table-row';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    
+    
+    
+    
+</body>
+</html>
